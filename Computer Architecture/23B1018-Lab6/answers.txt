@@ -1,0 +1,33 @@
+
+............................
+Q2)
+I am using the following stack format:
+- $a0 is used to store the address of array.
+- $a1 is used for len value
+- $a2 is used for val ie the value to be searched
+- start and end are added onto the stack by the caller.
+- The callee retrived them from the stack, restores the stack(add 8) and then stores $ra on to the stack(callee saved).
+(I am restoring stack immediately after function is called for efficienct use of stack.)
+
+As $a0, $a1, $a2 and $v0 are all preserved, there is no need to use stack for them.
+
+............................
+
+Q3)
+In my code the stack reaches its maximum depth when it goes into the EQUAL branch or FAIL branch.
+
+----For binary search on values present in the array MAXIMUM depth is reached when PC reaches EQUAL branch.
+    This is because there stack will be restored almost iteratively after this as the index has been found.
+    There will be a series of stack restorations(addi $sp, $sp, 4) and returns(jr $ra).
+
+----For binary search on values absent in the array MAXIMUM depth is reached when PC reaches the FAIL branch.
+    Same reasoning as above. There will be a series of returns(jr $ra) and stack restorations(addi $sp, $sp, 4) after this.
+
+Insert Breakpoints at line 91 and 97 to stop at maximum depth.
+
+---- The input values which give maximum stack depth are those that are not present in the array. 
+---- This is because in this case we have maximum recursion till start and end are equal.
+---- In the array i have defined input values -1, 0 etc give maximuum stack depth that is 5.
+---- This can be seen quite easily as start and end vary like thus : (0, 10), (0, 5), (0, 2), (0, 1), (0, 0) Total 5 calls ie 5 $ra's. 
+---- This can be checked by seeing $sp address and comparing it with initial address. 
+    

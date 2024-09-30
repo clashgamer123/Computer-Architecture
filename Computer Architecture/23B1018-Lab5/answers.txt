@@ -1,0 +1,112 @@
+Q1)
+Demo to TA [1 mark]: As an exercise, write a program called add.s, to input two integers, add them, and print the sum;
+show how your above program works, to your TA. 
+There is no need to have any prompts for the input (no need to print any string).
+:
+syscall is used for various printing and reading operations based on the value present in $v0($2) .
+$v0    -----    operation
+1        -       print_int present in $a0
+2        -       print float present in $f12
+3        -       print double present in $f12
+4        -       print string. address of string should be in $a0.
+5        -       read_int into $v0
+6        -       read_float into $f0
+7        -       read_double into $f0
+8        -       read_string : $a0 - address of string buffer , $a1 - length of string buffer.
+9        -       sbrk : dynamic memory allocation. $a0 should conttain number of bytes needed and $v0 will contain base address on success,
+10       -       exit
+
+--------------------------------------------------------------------------------------------------------------------
+
+Q2)
+Now statically declare some prompt strings, and redo the above program to input two integers, 
+calling it add-prompt.s. Now you must use appropriate strings to prompt the user, and to print the result (sum).
+:
+Meanings of various directives in mips:
+
+=>  .data : The .data directive tells the assembler that the following section of the code contains data declarations.
+            This data is placed in the data segment of the program's memory, which is used for static and global variables.
+            The data is allocated sequentially except for alignment requests.
+            Static variables retain their values across func calls or classes. When declared outside any function they are visible throughout the program.
+            They are declared in the .data segment.
+            Global variables are accessible to the whole program and other files too(if not restricted by static scoping). Declared using .globl
+    
+=>  .globl : Used to declare global variables. Eg .global main 
+
+=>  .word : The .word directive is used to allocate and initialize memory for one or more 32-bit words (4 bytes each).
+            Eg : .word 5, 10, 15 or .word 5 etc
+            Each word is stored in memory as a 32-bit integer, and the memory address is aligned to a 4-byte boundary.
+    
+=>  .byte , .half for 1byte and 2 bytes respectively.
+
+=>  .text : The .text directive tells the assembler that the following section of the code contains instructions (executable code).
+            This code is placed in the text segment of the program’s memory, which is read-only and contains the executable instructions.
+
+=>  .align: The .align directive aligns the next data or code on a specified boundary. .align n aligns it to next 2^n boundary.
+            This ensures that data or instructions are placed at memory addresses that match the required alignment, 
+            which is important for performance and correctness in many architectures.
+            .align is only for the very next label. After that we need another align statement if required. (label !! ie for array declarations all of them are aligned due to 1 label.)
+
+=>  main  :  The main: label is a symbolic name given to a specific memory address in the code. 
+            It marks the beginning of the main function, which is typically the entry point of a program.
+
+=>  .asciiz: The .asciiz directive is used to store a null-terminated string (a string followed by a zero byte, which marks the end of the string).
+
+--------------------------------------------------------------------------------------------------------------------
+
+Q3)
+:
+=> la : Used to load address of a label into a register. For arrays this is the base address.
+
+---------------------------------------------------------------------------------------------------------------------
+
+4.)
+By default there is automatic alignment for .word, .half, .float, .double .
+ie when we define a word using .word directive the memory is automatically aligned to next 2^2 byte boundary.
+
+align 0 can switch off automatic allignment. (untill the next .data directive)
+
+Removing align directive in aDeclare.s wont change anything due to default alignment in .word
+
+code for misalignment:
+.data
+B : .byte 1
+.align 1
+A : .byte 2
+    .word 3
+    .word 4
+
+.globl main
+
+.text
+
+main:
+    la $t0, A
+    lw $t1, 4($t0)
+    li $v0, 10
+    syscall
+
+----------------------------------------------------------------------------------------------------------------------
+5)
+:
+I have used $a0 , $a1, $a2, $a3 for x,re, x.im , start and end respectively.
+A and len are static variables declared in data segment.
+I have passed A onto stack and retrieved it in numLessThan for the 5th argument.
+I have passed $ra onto stack to not loose the return address to the original block.
+I have passed A and index to isLessThan by storing the original arguments in stack and retrieving later.
+
+----------------------------------------------------------------------------------------------------------------------
+
+6)
+Aspects that were difficult for me:
+=> Handling multiple arguments as mips has limited number of registers.
+=> Ensuring that all functions are returned, stack is restored, return address is not lost.
+=> Error debugging was a little difficult but became a little easier using breakpoints.
+
+Aspects that can be improved :
+=> code orgainization can improve with practice.
+=> code efficiency can also improve with practice.
+=> Code debugging can become easier as we gain experience.
+
+Aspects that cannot be improved:
+=> Stack calls and handling multiple arguments will remain messy and will require caution even after practice.

@@ -1,0 +1,25 @@
+1.)
+In Int Regs[16] I can we can see all the 32 registers available in the register file of the processor namely from $0 to $31.
+We can also see that in assembly they have alternate names: $s0 = $16 ..... $s7 is $23 .
+There are also FP regs which I dont understand yet.
+We can also see the temporary registers $t0 to $t9 . There are other registers too that i have not heard of like v0, v1 , a0 etc.
+
+In the data tab we can see the memory address range which is alloted for us to store data in the memory. ie the user data segment.
+We can also see the memory range for user stack.
+
+In the text tab we can see the memory range alloted for the user text segment that is the instructions that are stored in the memory.
+When we write an assembly code in mips and load it with xspim we will see those text instructions in the text tab.
+
+There is also a load button and a run button. There is also a skip button. We can also set breakpoints. 
+
+2.) First line begins at address [00400024] as seen in the User text segment.
+
+3.) li is getting translated into ori => OR immediate bit by bit. 
+    For example [ li $t0, 1 ] = [ ori $t0, $0, 1 ] ie or with the register $0 which always stores 0 .
+
+4.) 1st :  34080001 , 2nd : 34090002 , 3rd : 01095020
+    op codes = higher order 6 bits:
+    1st : 001101 for li
+    2nd : 001101 for li
+    3rd : 000000 for add
+
